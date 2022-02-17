@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 import time
 import optparse
 start = time.clock()
@@ -46,6 +48,9 @@ parser.add_option('-c', dest='confname', type='string',\
 			help='specify config filename')
 parser.add_option('-o', dest='outputname', type='string',\
 			help='specify output filename')
+parser.add_option('-w', dest='wordfile', type='string',\
+			help='specify wordlist filename')
+
 (options, arg) = parser.parse_args()
 if (options.confname == None) | (options.outputname == None):
 	confname = 'config.cfg'
@@ -56,8 +61,18 @@ else:
 	outputname = options.outputname
 	Config.read(confname)
 
+
 replacements = Config.items('Replacements');
-items = list(Config.get('Params','keywords').split(','))
+
+if (options.wordfile == None):
+	items = list(Config.get('Params','keywords').split(','))
+else:
+	wordfile = options.wordfile
+	f = open ( wordfile, 'r' )
+	lines = f.read()
+	items = lines.splitlines()
+	f.close()
+
 connectors = list(Config.get('Params','connectors').split(','))
 num_tails = list(Config.get('Params','num_tails').split(','))
 tails = list(Config.get('Params','tails').split(','))
